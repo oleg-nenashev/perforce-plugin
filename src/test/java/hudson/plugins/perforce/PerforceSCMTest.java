@@ -413,6 +413,7 @@ public class PerforceSCMTest extends HudsonTestCase {
     @Bug(25226)
     public void testCheckParamSubstitutionOrder() throws Exception {
         final String projectPath_format = "//depot1/%s/... //client/path1/...";
+        final String clientName_format="client_test_%s_FOO";
                 
         final FreeStyleProject prj = createFreeStyleProject();
         prj.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("PARAM1", "defaultValue")));
@@ -423,6 +424,7 @@ public class PerforceSCMTest extends HudsonTestCase {
         descriptor.save();
         
         final PerforceSCM scm = PerforceSCMTest.createPerforceSCMStub();
+        scm.setP4Client(String.format(clientName_format, "${PARAM1}"));
         scm.setProjectPath(String.format(projectPath_format, "${PARAM1}"));
         scm.setP4Tool("p4_stub");
         prj.setScm(scm);
@@ -432,12 +434,14 @@ public class PerforceSCMTest extends HudsonTestCase {
         assertNotNull(fBuild);
         FreeStyleBuild build = fBuild.get();
         assertLogContains(String.format(projectPath_format, "defaultValue"), build);
+        assertLogContains(String.format(clientName_format, "defaultValue"), build);
         
         // Run with params
         fBuild = prj.scheduleBuild2(0, null, new ParametersAction(new StringParameterValue("PARAM1", "value")));
         assertNotNull(fBuild);
         build = fBuild.get();
         assertLogContains(String.format(projectPath_format, "value"), build);
+        assertLogContains(String.format(clientName_format, "value"), build);
     }    
       
     /**
