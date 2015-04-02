@@ -1,0 +1,26 @@
+<div>
+    <p>
+        Integrates Jenkins with <a href="http://www.perforce.com/">Perforce SCM</a> repositories.
+    </p>
+    <p><b>Variables handling:</b>
+        Most of configuration fields support the substitution of environment variables.
+        Due to the high risk of data collisions, newest Perforce Plugin versions enforce
+        the full variable substitution in all fields. It means that checkout, 
+        polling, tagging and workspace cleanup operations will fail if a field 
+        contains unresolved variables.<br/>
+        
+        The behavior specifics:
+        <ul>
+            <li/> Polling, Tagging And Workspace do not have access to the build environment
+            <ul>
+                <li/> Plugin will substitute default 
+            </ul>
+            <li/> Polling, Tagging And Workspace cleanup operations do not utilize executors
+            <ul>
+                <li/><b>EXECUTOR_NUMBER</b> will be substituted as UNKNOWNEXECUTOR
+                <li/>Workspace cleanup and checkout may use different workspace
+                     names.
+            </ul>
+        </ul>
+    </p>
+</div>
